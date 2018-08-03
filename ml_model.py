@@ -71,6 +71,13 @@ classifier.add(Dense(output_dim = 1, activation = 'sigmoid'))
 # Compiling the CNN
 classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
 
+"""
+We need to start working from here, after we decide all the activation functions,
+and we decide how many layers and which optimization algotithm we have to use,
+and whether we need to flatten the images or not
+"""
 
+# Importing the liraries so as for fitting CNN to the Images
+from keras.preprocessing.image import ImageDataGenerator
 
 
