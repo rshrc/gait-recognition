@@ -44,7 +44,29 @@ cluster of neurons at the prior layer.
 Do we require pooling though, given the image is already in black and white??
 """
 
-
-
 classifier.add(MaxPooling2D(pool_size = (2, 2)))
+
+"""
+Flattening the image
+you need to convert the output of the convolutional part of the CNN into a 1D feature vector,
+to be used by the ANN part of it. This operation is called flattening. It gets the output 
+of the convolutional layers, flattens all its structure to create a single long feature 
+vector to be used by the dense layer for the final classification.
+"""
+
+classifier.add(Flatten())
+
+"""
+Full Connection :- 
+Fully connected layers connect every neuron in one layer to every neuron in another layer. 
+It is in principle the same as the traditional multi-layer perceptron neural network. 
+""" 
+
+# First layer uses the relu activation function
+classifier.add(Dense(output_dim = 128, activation = 'relu'))
+# If more than 2, we use the softmax activation function,
+# and the output neuron is using the softmax activation function
+classifier.add(Dense(output_dim = 1, activation = 'sigmoid'))
+
+
 
