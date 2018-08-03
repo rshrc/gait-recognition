@@ -68,5 +68,9 @@ classifier.add(Dense(output_dim = 128, activation = 'relu'))
 # and the output neuron is using the softmax activation function
 classifier.add(Dense(output_dim = 1, activation = 'sigmoid'))
 
+# Compiling the CNN
+classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+
+
 
 
