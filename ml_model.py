@@ -13,3 +13,10 @@ from keras.layers import (
     Flatten, 
     Dense
 )   
+
+# We need to load the dataset, images
+
+# Initializing the CNN
+classifier = Sequential()
+
+
