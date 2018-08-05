@@ -19,6 +19,7 @@ from keras.layers import (
 image_list = []
 for im_path in glob.glob("imagesrc/001/bg-01/000/*.png"):
     image = imio.imread(im_path)
+    image = image/255
     image_list.append(image)
 
 
