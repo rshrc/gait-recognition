@@ -31,6 +31,10 @@ MANIFEST
 *.manifest
 *.spec
 
+# Idea
+*.iml
+.idea/
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
