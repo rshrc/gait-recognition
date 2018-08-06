@@ -16,11 +16,14 @@ from keras.layers import (
 )
 
 # We need to load the dataset, images
-image_list = []
-for im_path in glob.glob("imagesrc/001/bg-01/000/*.png"):
-    image = imio.imread(im_path)
-    image = image/255
-    image_list.append(image)
+imlist = []
+for path in sorted(glob.glob("imagesrc/001/bg-01/*")):
+    imlist_cur = []
+    for im_path in sorted(glob.glob(path + "/*.png")):
+        image = imio.imread(im_path)
+        image = image/255
+        imlist_cur.append(image)
+    imlist.append(imlist_cur)
 
 
 # Initializing the CNN
