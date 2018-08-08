@@ -89,4 +89,24 @@ and whether we need to flatten the images or not
 # Importing the liraries so as for fitting CNN to the Images
 from keras.preprocessing.image import ImageDataGenerator
 
+train_datagen = ImageDataGenerator(
+        # rescale = 1./255, We dont have to rescale since we already have a black and white image
+        shear_range = 0.2,
+        zoom_range = 0.2,
+        horizontal_flip = True)
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+# Training Set
+training_set = train_datagen.flow_from_directory(
+        'imlist',
+        target_size = (64, 64),
+        batch_size = 32,
+        class_mode = 'binary',)
+
+test_set = test_datagen.flow_from_directory(
+        'imlist',
+        target_size = (64, 64),
+        batch_size = 32,
+class_mode = 'binary')
 
