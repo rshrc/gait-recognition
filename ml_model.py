@@ -82,7 +82,7 @@ It is in principle the same as the traditional multi-layer perceptron neural net
 """
 
 # First layer uses the relu activation function
-classifier.add(Dense(output_dim = 128, activation = 'relu'))
+classifier.add(Dense(output_dim = 560, activation = 'relu'))
 # If more than 2, we use the softmax activation function,
 # and the output neuron is using the softmax activation function
 classifier.add(Dense(output_dim = 1, activation = 'sigmoid'))
