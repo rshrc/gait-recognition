@@ -110,13 +110,13 @@ test_datagen = ImageDataGenerator(rescale=1./255)
 # Training Set
 training_set = train_datagen.flow_from_directory(
         'imlist',
-        target_size = (64, 64),
+        target_size = (240, 320),
         batch_size = 32,
         class_mode = 'binary',)
 
 test_set = test_datagen.flow_from_directory(
         'imlist',
-        target_size = (64, 64),
+        target_size = (240, 320),
         batch_size = 32,
 class_mode = 'binary')
 
