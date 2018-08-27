@@ -40,7 +40,17 @@ For this, we have 32 feature detectors with 3x3 dimensions
 And should we use the relu function?? need to discuss
 """
 
-classifier.add(Convolution2D(32, 3, 3, input_shape = (64, 64, 3), activation = 'relu'))
+# Hyperparameters
+
+"""
+Features  = 4
+Feature Size = 3x3
+
+Image Size = 240x320
+Number of Color Channels = grayscale (1)
+"""
+
+classifier.add(Convolution2D(4, 3, 3, input_shape = (240, 320, 1), activation = 'relu'))
 
 """
 Pooling - Taken the definition from Wikipedia
