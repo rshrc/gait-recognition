@@ -50,7 +50,7 @@ Image Size = 240x320
 Number of Color Channels = grayscale (1)
 """
 
-classifier.add(Convolution2D(4, 3, 3, input_shape = (240, 320, 1), activation = 'relu'))
+classifier.add(Convolution2D(4, (3, 3), input_shape = (240, 320, 1), activation = 'relu'))
 
 """
 Pooling - Taken the definition from Wikipedia
