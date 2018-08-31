@@ -17,7 +17,7 @@ from keras.layers import (
 
 # We need to load the dataset, images
 imlist = []
-for path in sorted(glob.glob("imagesrc/001/bg-01/*")):
+for path in sorted(glob.glob("../imagesrc/001/bg-01/*")):
     imlist_cur = []
     for im_path in sorted(glob.glob(path + "/*.png")):
         image = imio.imread(im_path)
