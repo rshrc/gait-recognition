@@ -5,3 +5,5 @@ tensorflow
 imageio
 matplotlib
 h5py
+opencv-python
+imutils
