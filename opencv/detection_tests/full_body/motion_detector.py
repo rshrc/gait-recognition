@@ -72,6 +72,7 @@ while True:
 		# and update the text
 		(x, y, w, h) = cv2.boundingRect(c)
 		cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        # TODO Occupied by whom? Using GAIT, passing the video argument to gait
 		text = "Occupied"
 
 	# draw the text and timestamp on the frame
@@ -81,7 +82,7 @@ while True:
 		(10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
 
 	# show the frame and record if the user presses a key
-	cv2.imshow("Security Feed", frame)
+	cv2.imshow("Gait Recognition", frame)
 	cv2.imshow("Thresh", thresh)
 	cv2.imshow("Frame Delta", frameDelta)
 	key = cv2.waitKey(1) & 0xFF
