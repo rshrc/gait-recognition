@@ -1,7 +1,7 @@
 import (
-    cv2, 
-    imutils, 
-    sys, 
+    cv2,
+    imutils,
+    sys,
     argparse,
     logging as logging,
     datetime as dt,
@@ -11,7 +11,7 @@ from imutils.video import VideoStream
 
 
 class MotionDetection:
-    
+
     def __init__(self):
         """
         Construct the argument parse,
@@ -19,8 +19,9 @@ class MotionDetection:
         """
         self.firstFrame = None
         self.ap = argparse.ArgumentParser()
-        self.ap.add_argument("-v", "--video", help="path to the video file") 
-        self.ap.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size")
+        self.ap.add_argument("-v", "--video", help="path to the video file")
+        self.ap.add_argument("-a", "--min-area", type=int,
+                             default=500, help="minimum area size")
         self.args = vars(self.ap.parse_args())
 
     def video_stream(self):
@@ -32,7 +33,7 @@ class MotionDetection:
         # If Arguemnt provided
         else:
             self.vs = cv2.VideoCapture(args["video"])
-        
+
     def start(self):
         # loop over the frames of the video
         while True:
@@ -97,9 +98,6 @@ class MotionDetection:
             # if the `q` key is pressed, break from the lop
             if key == ord("q"):
                 break
-            
-            
-                
 
 
 class PedestrianDetection:
@@ -123,8 +121,10 @@ class PedestrianDetection:
             r, frame = self.cap.read()
             if r:
                 start_time = time.time()
-                frame = cv2.resize(frame, (1280, 720))  # Downscale to improve frame rate
-                gray_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)  # HOG needs a grayscale image
+                # Downscale to improve frame rate
+                frame = cv2.resize(frame, (1280, 720))
+                # HOG needs a grayscale image
+                gray_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
 
                 rects, weights = hog.detectMultiScale(gray_frame)
 
@@ -135,7 +135,8 @@ class PedestrianDetection:
                 for i, (x, y, w, h) in enumerate(rects):
                     if weights[i] < 0.7:
                         continue
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                    cv2.rectangle(frame, (x, y), (x + w, y + h),
+                                  (0, 255, 0), 2)
 
                 cv2.imshow("preview", frame)
             k = cv2.waitKey(1)
