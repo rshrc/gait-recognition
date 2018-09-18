@@ -1,40 +1,37 @@
-import (
-    cv2,
-    imutils,
-    sys,
-    argparse,
-    logging as logging,
-    datetime as dt,
-)
 from time import sleep
+import time
+import logging as log
+import argparse
+import cv2
+import datetime as dt
+import datetime
+import imutils
 from imutils.video import VideoStream
 
 
 class MotionDetection:
 
     def __init__(self):
-        """
-        Construct the argument parse,
-        and parses the argument
-        """
-        self.firstFrame = None
-        self.ap = argparse.ArgumentParser()
-        self.ap.add_argument("-v", "--video", help="path to the video file")
-        self.ap.add_argument("-a", "--min-area", type=int,
-                             default=500, help="minimum area size")
-        self.args = vars(self.ap.parse_args())
+        print("Motion Detection Ready to Run!")
 
-    def video_stream(self):
-        # Reading from the Web Cam
-        if self.args.get("video", None) is None:
-            self.vs = VideoStream(src=0).start()
+    def run(self):
+        ap = argparse.ArgumentParser()
+        ap.add_argument("-v", "--video", help="path to the video file")
+        ap.add_argument("-a", "--min-area", type=int, default=500, help="minimum area size")
+        args = vars(ap.parse_args())
+
+        # if the video argument is None, then we are reading from webcam
+        if args.get("video", None) is None:
+            vs = VideoStream(src=0).start()
             time.sleep(2.0)
 
-        # If Arguemnt provided
+        # otherwise, we are reading from a video file
         else:
-            self.vs = cv2.VideoCapture(args["video"])
+            vs = cv2.VideoCapture(args["video"])
 
-    def start(self):
+        # initialize the first frame in the video stream
+        firstFrame = None
+
         # loop over the frames of the video
         while True:
             # grab the current frame and initialize the occupied/unoccupied
@@ -99,32 +96,26 @@ class MotionDetection:
             if key == ord("q"):
                 break
 
+        # cleanup the camera and close any open windows
+        vs.stop() if args.get("video", None) is None else vs.release()
+        cv2.destroyAllWindows()
+
 
 class PedestrianDetection:
 
     def __init__(self):
-        """
-        HOG Constructor
-        """
-        self.hog = cv2.HOGDescriptor()
-        self.hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+        print("Pedestrian Detection Ready to Run")
 
-    def start_video_capture(self):
-        """
-        Starts video capture if no argument provided
-        """
-        self.cap = cv2.VideoCapture("/path/to/test/video")
-
-    def start(self):
-        print("Press 'q' to exit")
+    def run(self):
+        hog = cv2.HOGDescriptor()
+        hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+        cap = cv2.VideoCapture("/path/to/test/video")
         while True:
-            r, frame = self.cap.read()
+            r, frame = cap.read()
             if r:
                 start_time = time.time()
-                # Downscale to improve frame rate
-                frame = cv2.resize(frame, (1280, 720))
-                # HOG needs a grayscale image
-                gray_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+                frame = cv2.resize(frame, (1280, 720))  # Downscale to improve frame rate
+                gray_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)  # HOG needs a grayscale image
 
                 rects, weights = hog.detectMultiScale(gray_frame)
 
@@ -135,69 +126,62 @@ class PedestrianDetection:
                 for i, (x, y, w, h) in enumerate(rects):
                     if weights[i] < 0.7:
                         continue
-                    cv2.rectangle(frame, (x, y), (x + w, y + h),
-                                  (0, 255, 0), 2)
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
                 cv2.imshow("preview", frame)
             k = cv2.waitKey(1)
             if k & 0xFF == ord("q"):  # Exit condition
                 break
 
-        def end(self):
-            # When everything is done, release the capture
-            video_capture.release()
-            cv2.destroyAllWindows()
-
 
 class FaceDetection:
 
     def __init__(self):
-        self.cascPath = "haarcascade_frontalface_default.xml"
-        self.faceCascade = cv2.CascadeClassifier(cascPath)
-        self.log.basicConfig(filename='face_detection.log', level=log.INFO)
+        print("Face Detection Ready to run!")
 
-    def start_video_capture(self):
-        self.video_capture = cv2.VideoCapture(0)
-        self.anterior = 0
+    def run(self):
+        cascPath = "haarcascade_frontalface_default.xml"
+        faceCascade = cv2.CascadeClassifier(cascPath)
+        log.basicConfig(filename='webcam.log', level=log.INFO)
 
-    def start(self):
+        video_capture = cv2.VideoCapture(0)
+        anterior = 0
+
         while True:
-            if not self.video_capture.isOpened():
+            if not video_capture.isOpened():
                 print('Unable to load camera.')
                 sleep(5)
                 pass
 
             # Capture frame-by-frame
-            self.ret, self.frame = video_capture.read()
+            ret, frame = video_capture.read()
 
-            self.gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            self.faces = faceCascade.detectMultiScale(
+            faces = faceCascade.detectMultiScale(
                 gray,
-                self.scaleFactor=1.1,
-                self.minNeighbors=5,
-                self.minSize=(30, 30)
+                scaleFactor=1.1,
+                minNeighbors=5,
+                minSize=(30, 30)
             )
 
             # Draw a rectangle around the faces
-            for (x, y, w, h) in self.faces:
-                cv2.rectangle(self.frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            for (x, y, w, h) in faces:
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-            if self.anterior != len(self.faces):
-                self.anterior = len(self.faces)
-                log.info("faces: "+str(len(self.faces)) +
-                         " at "+str(dt.datetime.now()))
+            if anterior != len(faces):
+                anterior = len(faces)
+                log.info("faces: " + str(len(faces)) + " at " + str(dt.datetime.now()))
 
             # Display the resulting frame
-            cv2.imshow('Video', self.frame)
+            cv2.imshow('Video', frame)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
             # Display the resulting frame
-            cv2.imshow('Video', self.frame)
+            cv2.imshow('Video', frame)
 
-        def end(self):
-            # When everything is done, release the capture
-            video_capture.release()
-            cv2.destroyAllWindows()
+        # When everything is done, release the capture
+        video_capture.release()
+        cv2.destroyAllWindows()
