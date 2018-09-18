@@ -1,19 +1,17 @@
 # Importing data imputation and visualization libraries
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import imageio as imio
 import glob
-# Importing the Deep Learning Libraries for CNN from keras
 
-# Using tensorflow backend
-from keras.models import Sequential
+import imageio as imio
 from keras.layers import (
     Convolution2D,
     MaxPooling2D,
     Flatten,
     Dense
 )
+# Using tensorflow backend
+from keras.models import Sequential
+
+# Importing the Deep Learning Libraries for CNN from keras
 
 # We need to load the dataset, images
 imlist = []
@@ -21,10 +19,9 @@ for path in sorted(glob.glob("../imagesrc/001/bg-01/*")):
     imlist_cur = []
     for im_path in sorted(glob.glob(path + "/*.png")):
         image = imio.imread(im_path)
-        image = image/255
+        image = image / 255
         imlist_cur.append(image)
     imlist.append(imlist_cur)
-
 
 # Initializing the CNN
 classifier = Sequential()
@@ -50,7 +47,7 @@ Image Size = 240x320
 Number of Color Channels = grayscale (1)
 """
 
-classifier.add(Convolution2D(4, (3, 3), input_shape = (240, 320, 3), activation = 'relu'))
+classifier.add(Convolution2D(4, (3, 3), input_shape=(240, 320, 3), activation='relu'))
 
 """
 Pooling - Taken the definition from Wikipedia
@@ -63,7 +60,7 @@ cluster of neurons at the prior layer.
 Do we require pooling though, given the image is already in black and white??
 """
 
-classifier.add(MaxPooling2D(pool_size = (2, 2)))
+classifier.add(MaxPooling2D(pool_size=(2, 2)))
 
 """
 Flattening the image
@@ -82,16 +79,16 @@ It is in principle the same as the traditional multi-layer perceptron neural net
 """
 
 # First layer uses the relu activation function
-classifier.add(Dense(output_dim = 560, activation = 'relu'))
+classifier.add(Dense(output_dim=560, activation='relu'))
 # If more than 2, we use the softmax activation function,
 # and the output neuron is using the softmax activation function
-classifier.add(Dense(output_dim = 560, activation = 'relu'))
-classifier.add(Dense(output_dim = 560, activation = 'relu'))
-classifier.add(Dense(output_dim = 560, activation = 'relu'))
-classifier.add(Dense(output_dim = 1, activation = 'sigmoid'))
+classifier.add(Dense(output_dim=560, activation='relu'))
+classifier.add(Dense(output_dim=560, activation='relu'))
+classifier.add(Dense(output_dim=560, activation='relu'))
+classifier.add(Dense(output_dim=1, activation='sigmoid'))
 
 # Compiling the CNN
-classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+classifier.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 """
 We need to start working from here, after we decide all the activation functions,
@@ -103,26 +100,25 @@ and whether we need to flatten the images or not
 from keras.preprocessing.image import ImageDataGenerator
 
 train_datagen = ImageDataGenerator(
-        # rescale = 1./255, We dont have to rescale since we already have a black and white image
-        shear_range = 0.2,
-        zoom_range = 0.2,
-        horizontal_flip = True)
+    # rescale = 1./255, We dont have to rescale since we already have a black and white image
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True)
 
-test_datagen = ImageDataGenerator(rescale=1./255)
+test_datagen = ImageDataGenerator(rescale=1. / 255)
 
 # Training Set
 training_set = train_datagen.flow_from_directory(
-        'imagesrc/001',
-        target_size = (240, 320),
-        batch_size = 32,
-        class_mode = 'binary',)
+    'imagesrc/001',
+    target_size=(240, 320),
+    batch_size=32,
+    class_mode='binary', )
 
 test_set = test_datagen.flow_from_directory(
-        'imagesrc/001',
-        target_size = (240, 320),
-        batch_size = 32,
-        class_mode = 'binary')
-
+    'imagesrc/001',
+    target_size=(240, 320),
+    batch_size=32,
+    class_mode='binary')
 
 classifier.fit_generator(
     training_set,
@@ -142,4 +138,3 @@ with open("model.json", "w") as json_file:
 # serialize weights to HDF5
 model.save_weights("model.h5")
 print("Saved model to disk")
-
