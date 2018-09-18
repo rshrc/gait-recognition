@@ -132,6 +132,7 @@ classifier.fit_generator(
     nb_val_samples=2000
 )
 
+model = classifier
 
 # Saving Model to File
 # serialize model to JSON
