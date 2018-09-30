@@ -7,6 +7,7 @@ from keras.layers import (
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.models import model_from_json
+import simplejson as sj
 
 def create_model():
     model = Sequential()
@@ -35,7 +36,9 @@ def save_model(model):
     print("Saving...")
     model.save_weights("model.h5")
     print(" [*] Weights")
-    open("model.json", "w").write(model.to_json())
+    open("model.json", "w").write(
+            sj.dumps(sj.loads(model.to_json()), indent=4)
+    )
     print(" [*] Model")
 
 def load_model():
@@ -45,6 +48,7 @@ def load_model():
     print(" [*] Model")
     model.load_weights("model.h5")
     print(" [*] Weights")
+    json_file.close()
     return model
 
 def dataset_provider(datagen):
