@@ -51,9 +51,9 @@ def load_model():
     json_file.close()
     return model
 
-def dataset_provider(datagen):
+def dataset_provider(datagen,dirpath):
     return datagen.flow_from_directory(
-        'imagesrc',
+        dirpath,
         target_size=(240, 320),
         batch_size=32,
         class_mode='binary'
@@ -62,15 +62,16 @@ def dataset_provider(datagen):
 # Primary datagen
 train_datagen = ImageDataGenerator(
     shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True)
+    zoom_range=0.2)
 # Validation datagen
-test_datagen = ImageDataGenerator(rescale=1. / 255)
+test_datagen = ImageDataGenerator(
+    shear_range=0.2,
+    zoom_range=0.2)
 
 # Primary Set for training
-training_set = dataset_provider(train_datagen)
+training_set = dataset_provider(train_datagen, 'imagesrc/001/bg-01')
 # Secondary / Test set for validation
-test_set = dataset_provider(test_datagen)
+test_set = dataset_provider(test_datagen,'imagesrc/001/bg-02')
 
 model = create_model()
 train(model, training_set, test_set)
