@@ -1,0 +1,1 @@
+from general_detection import DetectObject
