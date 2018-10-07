@@ -4,11 +4,7 @@
 import argparse
 import datetime
 import time
-
 import cv2
-import imutils
-# import the necessary packages
-from imutils.video import VideoStream
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -18,7 +14,7 @@ args = vars(ap.parse_args())
 
 # if the video argument is None, then we are reading from webcam
 if args.get("video", None) is None:
-    vs = VideoStream(src=0).start()
+    vs = VideoCapture(0)
     time.sleep(2.0)
 
 # otherwise, we are reading from a video file
@@ -32,8 +28,7 @@ firstFrame = None
 while True:
     # grab the current frame and initialize the occupied/unoccupied
     # text
-    frame = vs.read()
-    frame = frame if args.get("video", None) is None else frame[1]
+    ret, frame = vs.read()
     text = "Unoccupied"
 
     # if the frame could not be grabbed, then we have reached the end
@@ -42,7 +37,7 @@ while True:
         break
 
     # resize the frame, convert it to grayscale, and blur it
-    frame = imutils.resize(frame, width=500)
+    frame = cv2.resize(frame, (500, frame.shape[0]))
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (21, 21), 0)
 
@@ -61,7 +56,7 @@ while True:
     thresh = cv2.dilate(thresh, None, iterations=2)
     cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
                             cv2.CHAIN_APPROX_SIMPLE)
-    cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+    cnts = cnts[0]
 
     # loop over the contours
     for c in cnts:
@@ -93,5 +88,5 @@ while True:
         break
 
 # cleanup the camera and close any open windows
-vs.stop() if args.get("video", None) is None else vs.release()
+vs.release()
 cv2.destroyAllWindows()
