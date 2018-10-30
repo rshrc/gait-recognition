@@ -13,4 +13,3 @@ GAIT is a kind of behavioral biometric feature, whose raw data are video sequenc
 
 
 #### Currently Under Active Development
-##### Deadline : September 15, 2018
